@@ -1,0 +1,33 @@
+{
+  "branch": {
+    "alias": "b",
+    "describe": "branch name",
+    "demandOption": true
+  },
+  "message": {
+    "alias": "m",
+    "describe": "commit message",
+    "demandOption": true
+  },
+  "publish-branches": {
+    "describe": "branches in which it should publish",
+    "default": "master",
+    "type": "array"
+  },
+  "wildcard-minor": {
+    "describe": "wildcard to identify a minor commit",
+    "default": "[minor]"
+  },
+  "wildcard-major": {
+    "describe": "wildcard to identify a major commit",
+    "default": "[major]"
+  },
+  "wildcard-beta": {
+    "describe": "wildcard to identify a beta commit",
+    "default": "[beta]"
+  },
+  "wildcard-no-publish": {
+    "describe": "wildcard to identify a commit to skip publish",
+    "default": "[nopublish]"
+  }
+}

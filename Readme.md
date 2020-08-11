@@ -1,0 +1,67 @@
+# GetYourGuide - npm publish
+> CLI tool to handle publishing new modules to npm detecting the version type from the commit message, generating the tags and pushing to github.
+
+### Features
+- Allow to define increment (patch, minor, major) based on commit message.
+- Allow to create beta versions based on the message.
+- Increate automatically version in `package.json` creating a tag and push to your repo.
+- Define in which branchs do you want to publish and in which ones to omit it.
+
+### Workflow
+- Push commits to a publish branch `default: master` using any of the wildcards as part of your message `[minor] ...` `[mayor] ...` and the library will generate a version for you. If it doesn't detect any wildcard, it will do a `patch`.
+- Pushing commits to no-publish branches will omit the version generation.
+- If you're in any branch and you would like to generate a beta version, just commit with `[beta] ...`
+
+## Getting Started
+```shell
+npm install --save-dev @getyourguide/npm-publish
+```
+
+### Usage with drone
+1. Create a npm script in your `package.json`
+```json
+{
+  "scripts": {
+    "npm-publish": "npm-publish"
+  }
+}
+```
+
+2. Add a step in `drone` to publish your module
+```yml
+publish-package:
+  image: node:12-buster
+  commands:
+    - npm run npm-publish -- -b "${DRONE_BRANCH}" -m '${DRONE_COMMIT_MESSAGE/"/}'
+```
+
+## CLI Params
+Run with `--help` to get a full list of params
+```sh
+npm-publish --help
+
+Options:
+  --version              Show version number                           
+  --help                 Show help                                     
+  --branch, -b           branch name                                   [required]
+  --message, -m          commit message                                [required]
+  --publish-branches     branches in which it should publish [default: "master"]
+  --wildcard-minor       wildcard to identify a minor commit [default: "[minor]"]
+  --wildcard-major       wildcard to identify a major commit [default: "[major]"]
+  --wildcard-beta        wildcard to identify a beta commit  [default: "[beta]"]
+  --wildcard-no-publish  wildcard to identify a skip publish [default: "[nopublish]"]
+```
+
+### Add config in package.json
+Create a section in your `package.json` and overide the default values
+```json
+{
+  "npm-publish": {
+    "publish-branches": ["master", "develop"],
+    "wildcard-minor": "[custom-minor]",
+    "wildcard-major": "[custom-major]",
+    "wildcard-beta": "[custom-beta]",
+    "wildcard-no-publish": "[custom-nopublish]",
+  }
+}
+```
