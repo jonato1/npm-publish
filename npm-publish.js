@@ -28,6 +28,9 @@ const {
   wildcardMajor,
   wildcardMinor,
   wildcardNoPublish,
+  gitEmail,
+  gitName,
+  commitMessage,
 } = params.argv;
 
 const message = fullMessage.split(/\\n|\n/)[0]; // Get just the first line of the message
@@ -73,8 +76,12 @@ try {
   console.info('[NPM-PUBLISH] GIT not present, installing');
   execSync('apt install git');
 }
-execSync('git config --global user.email "guild-web-frontend@getyourguide.com"');
-execSync('git config --global user.name "Frontend Getyourguide"');
+if (gitEmail) {
+  execSync(`git config --global user.email "${gitEmail}"`);
+}
+if (gitName) {
+  execSync(`git config --global user.name "${gitName}"`);
+}
 execSync('git fetch');
 execSync(`git checkout ${branch}`);
 execSync('git reset --hard');
@@ -93,7 +100,7 @@ if (buildBeta) {
 try {
   console.info(`[NPM-PUBLISH] Creating new version with param: [${version}]`);
   execSync('npm config set unsafe-perm true');
-  execSync(`npm version ${version} -m "[auto-publish] version %s [ci skip]"`);
+  execSync(`npm version ${version} -m "${commitMessage}"`);
   execSync('npm config set unsafe-perm false');
 
   console.info(`[NPM-PUBLISH] Publish dependency ${buildBeta ? 'with --tag beta' : ''}`);

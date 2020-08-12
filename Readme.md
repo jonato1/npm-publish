@@ -40,28 +40,29 @@ Run with `--help` to get a full list of params
 ```sh
 npm-publish --help
 
-Options:
-  --version              Show version number                           
-  --help                 Show help                                     
-  --branch, -b           branch name                                   [required]
-  --message, -m          commit message                                [required]
-  --publish-branches     branches in which it should publish [default: "master"]
-  --wildcard-minor       wildcard to identify a minor commit [default: "[minor]"]
-  --wildcard-major       wildcard to identify a major commit [default: "[major]"]
-  --wildcard-beta        wildcard to identify a beta commit  [default: "[beta]"]
-  --wildcard-no-publish  wildcard to identify a skip publish [default: "[nopublish]"]
+Options:                                   
+  --help                                                    
+  --branch, -b        branch name                                         [required]
+  --message, -m       commit message                                      [required]
+  --publish-branches  branches where it should publish   [array] [default: "master"]
+  --wildcard-minor    wildcard to identify a minor commit       [default: "[minor]"]
+  --wildcard-major    wildcard to identify a major commit       [default: "[major]"]
+  --wildcard-beta     wildcard to identify a beta commit         [default: "[beta]"]
+  --git-email         git email to create the comit.   [default: "local git config"]
+  --git-name          git name to create the commit.   [default: "local git config"]
+  --commit-message    commit message. Use %s to specify the version
+                                    [default: "[auto-publish] version %s [ci skip]"]
 ```
 
 ### Add config in package.json
-Create a section in your `package.json` and overide the default values
+You can also specify the params in your `package.json`. Add a section `npm-publish`
 ```json
 {
   "npm-publish": {
     "publish-branches": ["master", "develop"],
     "wildcard-minor": "[custom-minor]",
     "wildcard-major": "[custom-major]",
-    "wildcard-beta": "[custom-beta]",
-    "wildcard-no-publish": "[custom-nopublish]",
+    "...": "..."
   }
 }
 ```
