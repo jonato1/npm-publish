@@ -26,6 +26,10 @@
     "describe": "wildcard to identify a beta commit",
     "default": "[beta]"
   },
+  "wildcard-no-publish": {
+    "describe": "wildcard to identify a commit to skip publish",
+    "default": "[nopublish]"
+  },
   "git-email": {
     "describe": "git email to create the commit"
   },

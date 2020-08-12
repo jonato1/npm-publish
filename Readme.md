@@ -1,10 +1,10 @@
 # GetYourGuide - npm publish
-> CLI tool to handle publishing new modules to npm detecting the version type from the commit message, generating the tags and pushing to github.
+> CLI tool to handle publishing modules, detecting the version increment from the commit message, generating the tags and pushing to github.
 
 ### Features
 - Allow to define increment (patch, minor, major) based on commit message.
 - Allow to create beta versions based on the message.
-- Increate automatically version in `package.json` creating a tag and push to your repo.
+- Increase automatically version in `package.json` creating a tag and push to your repo.
 - Define in which branchs do you want to publish and in which ones to omit it.
 
 ### Workflow
@@ -32,7 +32,7 @@ npm install --save-dev @getyourguide/npm-publish
 publish-package:
   image: node:12-buster
   commands:
-    - npm run npm-publish -- -b "${DRONE_BRANCH}" -m '${DRONE_COMMIT_MESSAGE/"/}'
+    - npm run npm-publish -- -b ${DRONE_BRANCH} -m "$${DRONE_COMMIT_MESSAGE}"
 ```
 
 ## CLI Params
@@ -42,16 +42,17 @@ npm-publish --help
 
 Options:                                   
   --help                                                    
-  --branch, -b        branch name                                         [required]
-  --message, -m       commit message                                      [required]
-  --publish-branches  branches where it should publish   [array] [default: "master"]
-  --wildcard-minor    wildcard to identify a minor commit       [default: "[minor]"]
-  --wildcard-major    wildcard to identify a major commit       [default: "[major]"]
-  --wildcard-beta     wildcard to identify a beta commit         [default: "[beta]"]
-  --git-email         git email to create the comit.   [default: "local git config"]
-  --git-name          git name to create the commit.   [default: "local git config"]
-  --commit-message    commit message. Use %s to specify the version
-                                    [default: "[auto-publish] version %s [ci skip]"]
+  --branch, -b           branch name                                         [required]
+  --message, -m          commit message                                      [required]
+  --publish-branches     branches where it should publish   [array] [default: "master"]
+  --wildcard-minor       wildcard to identify a minor commit       [default: "[minor]"]
+  --wildcard-major       wildcard to identify a major commit       [default: "[major]"]
+  --wildcard-beta        wildcard to identify a beta commit         [default: "[beta]"]
+  --wildcard-no-publish  wildcard to identify a nopublish commit    [default: "[beta]"]
+  --git-email            git email to create the comit.   [default: "local git config"]
+  --git-name             git name to create the commit.   [default: "local git config"]
+  --commit-message       commit message. Use %s to specify the version
+                                       [default: "[auto-publish] version %s [ci skip]"]
 ```
 
 ### Add config in package.json
