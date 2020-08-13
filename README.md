@@ -4,11 +4,11 @@
 ### Features
 - Allow to define increment (patch, minor, major) based on commit message.
 - Allow to create beta versions based on the message.
-- Increase automatically version in `package.json` creating a tag and push to your repo.
-- Define in which branchs do you want to publish and in which ones to omit it.
+- Increase automatically version in `package.json` creating a tag and pushing to your repo.
+- Define branchs in which you want to publish and which ones to omit it.
 
 ### Workflow
-- Push commits to a publish branch `default: master` using any of the wildcards as part of your message `[minor] ...` `[mayor] ...` and the library will generate a version for you. If it doesn't detect any wildcard, it will do a `patch`.
+- Push commits to a publish branch `[default: master]` using any of the wildcards as part of your message `[minor] ...` `[major] ...` and the library will generate a version for you. If it doesn't detect any wildcard, it will do a `patch`.
 - Pushing commits to no-publish branches will omit the version generation.
 - If you're in any branch and you would like to generate a beta version, just commit with `[beta] ...`
 
