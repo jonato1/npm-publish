@@ -17,7 +17,7 @@
 npm install --save-dev @getyourguide/npm-publish
 ```
 
-### Usage with drone
+### Usage with Drone or Github Actions
 1. Create a npm script in your `package.json`
 ```json
 {
@@ -27,12 +27,20 @@ npm install --save-dev @getyourguide/npm-publish
 }
 ```
 
-2. Add a step in `drone` to publish your module
+2. Add a step to publish your module
+
+**Drone**  
 ```yml
 publish-package:
   image: node:12-buster
   commands:
     - npm run npm-publish -- -b ${DRONE_BRANCH} -m "$${DRONE_COMMIT_MESSAGE}"
+```
+
+**Github Actions**  
+```yml
+- name: Publish library
+  run: npm run npm-publish -- -b "${{ github.event.head_commit.message }}" -m "${{ github.ref }}"
 ```
 
 ## CLI Params
