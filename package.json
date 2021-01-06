@@ -5,7 +5,7 @@
   "main": "npm-publish.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/getyourguide/npm-publish.git"
+    "url": "https://github.com/getyourguide/npm-publish.git"
   },
   "scripts": {
     "test": "jest"

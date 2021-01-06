@@ -14,4 +14,4 @@ jobs:
       run: npm ci
       
     - name: Publish library
-      run: npm run version:publish -- -b "${{ github.ref }}" -m "${{ github.event.head_commit.message }}"
+      run: npm run npm-publish -- -b "${{ github.ref }}" -m "${{ github.event.head_commit.message }}"
