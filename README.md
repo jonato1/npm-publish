@@ -40,8 +40,9 @@ publish-package:
 **Github Actions**  
 ```yml
 - name: Publish library
-  run: npm run npm-publish -- -b "${{ github.event.head_commit.message }}" -m "${{ github.ref }}"
+  run: npm run npm-publish -- -b "${{ github.ref }}" -m "${{ github.event.head_commit.message }}"
 ```
+[workflow.yml full example](./docs/github-workflow-example.yml)  
 
 ## CLI Params
 Run with `--help` to get a full list of params
