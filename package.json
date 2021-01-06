@@ -24,7 +24,7 @@
     "url": "https://github.com/getyourguide/npm-publish/issues"
   },
   "publishConfig": {
-    "registry": "https://registry.npmjs.com"
+    "registry": "https://registry.npmjs.org"
   },
   "author": "Facundo Allemand <facundo.allemand@getyourguide.com>",
   "homepage": "https://github.com/getyourguide/npm-publish",
