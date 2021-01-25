@@ -87,4 +87,42 @@ describe('npm-publish', () => {
     require('./npm-publish');
     expect(mockExecSync).toHaveBeenLastCalledWith('npm publish --tag beta');
   });
+
+  test('should publish using a different publish branch', () => {
+    mockParams = {
+      message: 'TEST',
+      branch: 'master-v2',
+      publishBranches: ['master', 'master-v2'],
+      commitMessage: 'COMMIT-MESSAGE',
+    }
+    require('./npm-publish');
+    expect(mockExecSync.mock.calls).toEqual([
+      ['command -v git'],
+      ['git fetch'],
+      ['git checkout master-v2'],
+      ['git reset --hard'],
+      ['npm config set unsafe-perm true'],  
+      ['npm version patch -m "COMMIT-MESSAGE"'],
+      ['npm config set unsafe-perm false'],
+      ['npm publish'],
+      ['git push --tags --set-upstream origin master-v2'],
+    ]);
+  });
+
+  test('branch detection should work using a github ref', () => {
+    mockParams = {
+      message: 'TEST',
+      branch: 'refs/heads/master',
+      publishBranches: ['master'],
+      commitMessage: 'COMMIT-MESSAGE',
+    }
+    require('./npm-publish');
+    expect(mockExecSync.mock.calls).toEqual([
+      ...commonExecCalls,
+      ['npm version patch -m "COMMIT-MESSAGE"'],
+      ['npm config set unsafe-perm false'],
+      ['npm publish'],
+      ['git push --tags --set-upstream origin master'],
+    ]);
+  });
 });

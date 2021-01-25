@@ -34,6 +34,7 @@ const {
 } = params.argv;
 
 const message = fullMessage.split(/\\n|\n/)[0]; // Get just the first line of the message
+const curatedBranch = branch.substring(branch.lastIndexOf('/') + 1);
 const parentPackage = readPkgUp.sync().packageJson;
 const buildBeta = message.toLowerCase().includes(wildcardBeta);
 const betaVersion = `${parentPackage.version}-beta.${(Math.random() * 100).toFixed(0)}`;
@@ -41,7 +42,7 @@ const betaVersion = `${parentPackage.version}-beta.${(Math.random() * 100).toFix
 console.info('-------------------------------------------');
 console.info('-------------   NPM PUBLISH   -------------');
 console.info('-------------------------------------------');
-console.info(`BRANCH: ${branch}`);
+console.info(`BRANCH: ${curatedBranch}`);
 console.info(`MESSAGE: "${message}"`);
 console.info(`WILDCARD_MAJOR: "${wildcardMajor}"`);
 console.info(`WILDCARD_MINOR: "${wildcardMinor}"`);
@@ -49,7 +50,7 @@ console.info(`WILDCARD_BETA: "${wildcardBeta}"`);
 console.info(`WILDCARD_NO_PUBLISH: "${wildcardNoPublish}"`);
 console.info(`PUBLISH BRANCHES: ${publishBranches}\n`);
 
-if (!publishBranches.includes(branch) && !buildBeta) {
+if (!publishBranches.includes(curatedBranch) && !buildBeta) {
   console.info('[NPM-PUBLISH] Exit: No need to build the version');
   process.exit(0);
 }
@@ -83,7 +84,7 @@ if (gitName) {
   execSync(`git config --global user.name "${gitName}"`);
 }
 execSync('git fetch');
-execSync(`git checkout ${branch}`);
+execSync(`git checkout ${curatedBranch}`);
 execSync('git reset --hard');
 
 // Set type of version increment
@@ -112,6 +113,6 @@ try {
 }
 
 if (!buildBeta) {
-  console.info(`[NPM-PUBLISH] Push changes to ${branch}`);
-  execSync(`git push --tags --set-upstream origin ${branch}`);
+  console.info(`[NPM-PUBLISH] Push changes to ${curatedBranch}`);
+  execSync(`git push --tags --set-upstream origin ${curatedBranch}`);
 }
