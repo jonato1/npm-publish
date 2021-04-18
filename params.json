@@ -38,6 +38,6 @@
   },
   "commit-message": {
     "describe": "commit message. Use %s to specify the version",
-    "default": "[npm-publish] version %s [ci skip]"
+    "default": "[npm-publish] %p@%v [ci skip]"
   }
 }

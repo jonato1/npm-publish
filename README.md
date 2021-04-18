@@ -61,7 +61,7 @@ Options:
   --git-email            git email to create the comit.   [default: "local git config"]
   --git-name             git name to create the commit.   [default: "local git config"]
   --commit-message       commit message. Use %s to specify the version
-                                       [default: "[auto-publish] version %s [ci skip]"]
+                                       [default: "[npm-publish] %p@%v [ci skip]"]
 ```
 
 ### Add config in package.json
@@ -69,9 +69,11 @@ You can also specify the params in your `package.json`. Add a section `npm-publi
 ```json
 {
   "npm-publish": {
-    "publish-branches": ["master", "develop"],
-    "wildcard-minor": "[custom-minor]",
-    "wildcard-major": "[custom-major]",
+    "publishBranches": ["master", "develop"],
+    "wildcardMinor": "[custom-minor]",
+    "wildcardMajor": "[custom-major]",
+    "gitEmail": "it@mycompany.com",
+    "gitName": "IT - MyCompany",
     "...": "..."
   }
 }

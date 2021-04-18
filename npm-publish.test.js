@@ -7,7 +7,10 @@ jest.mock('yargs', () => ({
     pkgConf: () => ({
       usage: () => ({
         help: () => ({
-          argv: mockParams,
+          argv: {
+            commitMessage: "[npm-publish] %p@%v [ci skip]",
+            ...mockParams,
+          },
           option: jest.fn(),
         })
       })
@@ -51,9 +54,12 @@ describe('npm-publish', () => {
     require('./npm-publish');
     expect(mockExecSync.mock.calls).toEqual([
       ...commonExecCalls,
-      ['npm version patch -m "COMMIT-MESSAGE"'],
+      ['npm --no-git-tag-version version patch'],
       ['npm config set unsafe-perm false'],
       ['npm publish'],
+      ['git add .'],
+      ['git commit -m "COMMIT-MESSAGE"'],
+      ['git tag "@getyourguide/npm-publish/1.0.7"'],
       ['git push --tags --set-upstream origin master'],
     ]);
   });
@@ -69,9 +75,12 @@ describe('npm-publish', () => {
     require('./npm-publish');
     expect(mockExecSync.mock.calls).toEqual([
       ...commonExecCalls,
-      ['npm version minor -m "COMMIT-MESSAGE"'],
+      ['npm --no-git-tag-version version minor'],
       ['npm config set unsafe-perm false'],
       ['npm publish'],
+      ['git add .'],
+      ['git commit -m "COMMIT-MESSAGE"'],
+      ['git tag "@getyourguide/npm-publish/1.0.7"'],
       ['git push --tags --set-upstream origin master'],
     ]);
   });
@@ -102,9 +111,12 @@ describe('npm-publish', () => {
       ['git checkout master-v2'],
       ['git reset --hard'],
       ['npm config set unsafe-perm true'],  
-      ['npm version patch -m "COMMIT-MESSAGE"'],
+      ['npm --no-git-tag-version version patch'],
       ['npm config set unsafe-perm false'],
       ['npm publish'],
+      ['git add .'],
+      ['git commit -m "COMMIT-MESSAGE"'],
+      ['git tag "@getyourguide/npm-publish/1.0.7"'],
       ['git push --tags --set-upstream origin master-v2'],
     ]);
   });
@@ -119,9 +131,12 @@ describe('npm-publish', () => {
     require('./npm-publish');
     expect(mockExecSync.mock.calls).toEqual([
       ...commonExecCalls,
-      ['npm version patch -m "COMMIT-MESSAGE"'],
+      ['npm --no-git-tag-version version patch'],
       ['npm config set unsafe-perm false'],
       ['npm publish'],
+      ['git add .'],
+      ['git commit -m "COMMIT-MESSAGE"'],
+      ['git tag "@getyourguide/npm-publish/1.0.7"'],
       ['git push --tags --set-upstream origin master'],
     ]);
   });

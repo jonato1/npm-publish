@@ -101,9 +101,8 @@ if (buildBeta) {
 try {
   console.info(`[NPM-PUBLISH] Creating new version with param: [${version}]`);
   execSync('npm config set unsafe-perm true');
-  execSync(`npm version ${version} -m "${commitMessage}"`);
+  execSync(`npm --no-git-tag-version version ${version}`);
   execSync('npm config set unsafe-perm false');
-
   console.info(`[NPM-PUBLISH] Publish dependency ${buildBeta ? 'with --tag beta' : ''}`);
   execSync(`npm publish${buildBeta ? ' --tag beta' : ''}`);
 } catch (e) {
@@ -113,6 +112,12 @@ try {
 }
 
 if (!buildBeta) {
+  const { version, name } = readPkgUp.sync().packageJson;
+  console.info(`[NPM-PUBLISH] Create git tag: ${name}/${version}`);
+  const message = commitMessage.replace("%v", version).replace("%p", name)
+  execSync("git add .");
+  execSync(`git commit -m "${message}"`);
+  execSync(`git tag "${name}/${version}"`);
   console.info(`[NPM-PUBLISH] Push changes to ${curatedBranch}`);
   execSync(`git push --tags --set-upstream origin ${curatedBranch}`);
 }
