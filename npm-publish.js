@@ -31,6 +31,7 @@ const {
   gitEmail,
   gitName,
   commitMessage,
+  tagName
 } = params.argv;
 
 const message = fullMessage.split(/\\n|\n/)[0]; // Get just the first line of the message
@@ -115,9 +116,10 @@ if (!buildBeta) {
   const { version, name } = readPkgUp.sync().packageJson;
   console.info(`[NPM-PUBLISH] Create git tag: ${name}/${version}`);
   const message = commitMessage.replace("%v", version).replace("%p", name)
+  const gitTag = tagName.replace("%v", version).replace("%p", name);
   execSync("git add .");
   execSync(`git commit -m "${message}"`);
-  execSync(`git tag "${name}/${version}"`);
+  execSync(`git tag "${gitTag}"`);
   console.info(`[NPM-PUBLISH] Push changes to ${curatedBranch}`);
   execSync(`git push --tags --set-upstream origin ${curatedBranch}`);
 }

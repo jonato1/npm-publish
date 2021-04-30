@@ -37,7 +37,11 @@
     "describe": "git name to create the commit"
   },
   "commit-message": {
-    "describe": "commit message. Use %s to specify the version",
+    "describe": "commit message. Use %v to specify the version and %p to specify the package",
     "default": "[npm-publish] %p@%v [ci skip]"
+  },
+  "tag-name": {
+    "describe": "commit message. Use %v to specify the version and %p to specify the package",
+    "default": "v%v"
   }
 }

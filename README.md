@@ -60,8 +60,10 @@ Options:
   --wildcard-no-publish  wildcard to identify a nopublish commit    [default: "[beta]"]
   --git-email            git email to create the comit.   [default: "local git config"]
   --git-name             git name to create the commit.   [default: "local git config"]
-  --commit-message       commit message. Use %s to specify the version
+  --commit-message       commit message. Use %v to specify the version and %p for package
                                        [default: "[npm-publish] %p@%v [ci skip]"]
+  --tag-name             git tag name. Use %v to specify the version and %p for package
+                                       [default: "v%v"]
 ```
 
 ### Add config in package.json

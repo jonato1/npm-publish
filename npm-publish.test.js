@@ -9,6 +9,7 @@ jest.mock('yargs', () => ({
         help: () => ({
           argv: {
             commitMessage: "[npm-publish] %p@%v [ci skip]",
+            tagName: "v1.0.8",
             ...mockParams,
           },
           option: jest.fn(),
@@ -59,7 +60,7 @@ describe('npm-publish', () => {
       ['npm publish'],
       ['git add .'],
       ['git commit -m "COMMIT-MESSAGE"'],
-      ['git tag "@getyourguide/npm-publish/1.0.7"'],
+      ['git tag "v1.0.8"'],
       ['git push --tags --set-upstream origin master'],
     ]);
   });
@@ -80,7 +81,7 @@ describe('npm-publish', () => {
       ['npm publish'],
       ['git add .'],
       ['git commit -m "COMMIT-MESSAGE"'],
-      ['git tag "@getyourguide/npm-publish/1.0.7"'],
+      ['git tag "v1.0.8"'],
       ['git push --tags --set-upstream origin master'],
     ]);
   });
@@ -116,7 +117,7 @@ describe('npm-publish', () => {
       ['npm publish'],
       ['git add .'],
       ['git commit -m "COMMIT-MESSAGE"'],
-      ['git tag "@getyourguide/npm-publish/1.0.7"'],
+      ['git tag "v1.0.8"'],
       ['git push --tags --set-upstream origin master-v2'],
     ]);
   });
@@ -136,7 +137,7 @@ describe('npm-publish', () => {
       ['npm publish'],
       ['git add .'],
       ['git commit -m "COMMIT-MESSAGE"'],
-      ['git tag "@getyourguide/npm-publish/1.0.7"'],
+      ['git tag "v1.0.8"'],
       ['git push --tags --set-upstream origin master'],
     ]);
   });
