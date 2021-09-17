@@ -18,6 +18,14 @@ jest.mock('yargs', () => ({
     })
   })
 }));
+jest.mock('read-pkg-up', () => ({
+  sync: () => ({
+    packageJson: {
+      version: "1.0.0",
+      name: "parent-package",
+    }
+  })
+}));
 
 const commonExecCalls = [
   ['command -v git'],

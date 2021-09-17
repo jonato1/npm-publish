@@ -30,10 +30,10 @@
   "homepage": "https://github.com/getyourguide/npm-publish",
   "dependencies": {
     "parent-module": "^2.0.0",
-    "read-pkg-up": "^7.0.1",
-    "yargs": "^15.3.1"
+    "read-pkg-up": "^8.0.0",
+    "yargs": "^17.1.1"
   },
   "devDependencies": {
-    "jest": "^26.6.3"
+    "jest": "^27.2.0"
   }
 }
