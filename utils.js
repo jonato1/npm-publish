@@ -52,11 +52,11 @@ export const createNewVersion = (version, buildBeta, registry) => {
   execSync(`npm publish${buildBeta ? ' --tag beta' : ''}${registry ? ` --registry=${registry}` : ''}`);
 }
 
-export const pushToGitRepo = (branch, parentPackage, commitMessage, tagName) => {
-  const message = commitMessage.replace("%v", parentPackage.version).replace("%p", parentPackage.name)
+export const pushToGitRepo = (branch, packageName, newVersion, commitMessage, tagName) => {
+  const message = commitMessage.replace("%v", newVersion).replace("%p", packageName)
   execSync("git add .");
   execSync(`git commit -m "${message}"`);
-  const gitTag = tagName.replace("%v", parentPackage.version).replace("%p", parentPackage.name);
+  const gitTag = tagName.replace("%v", newVersion).replace("%p", packageName);
   execSync(`git tag "${gitTag}"`);
   execSync(`git push --tags --set-upstream origin ${branch}`);
 }
