@@ -36,7 +36,9 @@ const {
 } = params.argv;
 
 const message = fullMessage.split(/\\n|\n/)[0]; // Get just the first line of the message
-const curatedBranch = branch.substring(branch.lastIndexOf('/') + 1);
+// This exists since GITHUB_REF provided by GitHub Actions, unlike
+// DRONE_BRANCH, CIRCLE_BRANCH, etc contains the `refs/heads/` prefix
+const curatedBranch = branch.replace('refs/heads/', '')
 const parentPackage = readPkgUp.sync().packageJson;
 const buildBeta = message.toLowerCase().includes(wildcardBeta);
 const betaVersion = `${parentPackage.version}-beta.${(Math.random() * 100).toFixed(0)}`;
