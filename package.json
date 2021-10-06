@@ -1,6 +1,6 @@
 {
   "name": "@getyourguide/npm-publish",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "description": "Module to publish npm modules",
   "main": "npm-publish.js",
   "repository": {
