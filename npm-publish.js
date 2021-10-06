@@ -8,8 +8,11 @@ const readPkgUp = require('read-pkg-up');
  * Publish package
  * This module handles the publishing of the new version of the library.
  */
+const configPath = findUp.sync(['.npm-publish', '.npm-publish.json'])
+const config = configPath ? JSON.parse(fs.readFileSync(configPath)) : {}
 const params = yargs
 .scriptName("npm-publish")
+.config(config)
 .pkgConf('npm-publish')
 .usage('$0 -b branch -m message')
 .help();
@@ -50,6 +53,7 @@ console.info(`WILDCARD_MAJOR: "${wildcardMajor}"`);
 console.info(`WILDCARD_MINOR: "${wildcardMinor}"`);
 console.info(`WILDCARD_BETA: "${wildcardBeta}"`);
 console.info(`WILDCARD_NO_PUBLISH: "${wildcardNoPublish}"`);
+console.info(`REGISTRY: "${registry}"`);
 console.info(`PUBLISH BRANCHES: ${publishBranches}\n`);
 
 if (!publishBranches.includes(curatedBranch) && !buildBeta) {
@@ -105,7 +109,7 @@ try {
   execSync('npm config set unsafe-perm true');
   execSync(`npm --no-git-tag-version version ${version}`);
   execSync('npm config set unsafe-perm false');
-  console.info(`[NPM-PUBLISH] Publish dependency ${buildBeta ? 'with --tag beta' : ''}`);
+  console.info(`[NPM-PUBLISH] Publish dependency ${buildBeta ? 'with --tag beta' : ''} ${registry ? `--registry=${registry}` : ''}`);
   execSync(`npm publish${buildBeta ? ' --tag beta' : ''}${registry ? ` --registry=${registry}` : ''}`);
 } catch (e) {
   console.info('[NPM-PUBLISH] Problem publishing dependency');
