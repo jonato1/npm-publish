@@ -70,5 +70,6 @@ try {
 // 5. Push changes to Git repository
 if (!buildBeta) {
   console.info(`[NPM-PUBLISH] Pushing tag & commit to repository`);
-  pushToGitRepo(branch, parentPackage.name, newVersion, commitMessage, tagName);
+  const updatedParentPackage = readPackageUpSync().packageJson;
+  pushToGitRepo(branch, updatedParentPackage, commitMessage, tagName);
 }
