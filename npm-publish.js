@@ -1,31 +1,11 @@
 #!/usr/bin/env node
-import fs from "fs";
-import path from 'path';
-import { fileURLToPath } from 'url';
-import { execSync } from 'child_process';
-import yargs from 'yargs';
-import { hideBin } from 'yargs/helpers';
 import { readPackageUpSync } from 'read-pkg-up';
+import { getParams, shouldBuildVersion, getNewVersion, createNewVersion, pushToGitRepo, setupGit } from "./utils.js";
 
 /**
  * Publish package
  * This module handles the publishing of the new version of the library.
  */
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const paramsJson = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./params.json")));
-const argv = yargs(hideBin(process.argv));
-const params = argv
-.scriptName("npm-publish")
-.pkgConf('npm-publish')
-.usage('$0 -b branch -m message')
-.help();
-
-// Initialize params
-Object.keys(paramsJson).forEach(name => {
-  params.option(name, {
-    ...paramsJson[name],
-  });
-});
 const {
   message: fullMessage,
   branch,
@@ -39,15 +19,14 @@ const {
   commitMessage,
   tagName,
   registry,
-} = params.argv;
+} = getParams();
 
 const message = fullMessage.split(/\\n|\n/)[0]; // Get just the first line of the message
+const parentPackage = readPackageUpSync().packageJson;
+const buildBeta = message.toLowerCase().includes(wildcardBeta);
 // This exists since GITHUB_REF provided by GitHub Actions, unlike
 // DRONE_BRANCH, CIRCLE_BRANCH, etc contains the `refs/heads/` prefix
 const curatedBranch = branch.replace('refs/heads/', '');
-const parentPackage = readPackageUpSync().packageJson;
-const buildBeta = message.toLowerCase().includes(wildcardBeta);
-const betaVersion = `${parentPackage.version}-beta.${(Math.random() * 100).toFixed(0)}`;
 
 console.info('-------------------------------------------');
 console.info('-------------   NPM PUBLISH   -------------');
@@ -60,75 +39,36 @@ console.info(`WILDCARD_BETA: "${wildcardBeta}"`);
 console.info(`WILDCARD_NO_PUBLISH: "${wildcardNoPublish}"`);
 console.info(`PUBLISH BRANCHES: ${publishBranches}\n`);
 
-if (!publishBranches.includes(curatedBranch) && !buildBeta) {
+// 1. Check if we should build the version
+if (!shouldBuildVersion(publishBranches, curatedBranch, message, wildcardNoPublish, buildBeta)) {
   console.info('[NPM-PUBLISH] Exit: No need to build the version');
   process.exit(0);
 }
 
-if (buildBeta) {
-  console.info('--------   BETA VERSION  --------');
-  console.info(`Creating beta version: ${betaVersion}`);
-  console.info('Install it by running:');
-  console.info(`npm i --save ${parentPackage.name}@${betaVersion}`);
-  console.info('---------------------------------\n');
-}
+// 2. Define new version
+const newVersion = getNewVersion(parentPackage.version, wildcardMinor, wildcardMajor, buildBeta);
+console.info('-----------  VERSION  ------------');
+console.info(`Creating beta version: ${newVersion}`);
+console.info('Install it by running:');
+console.info(`npm i --save ${parentPackage.name}@${newVersion}`);
+console.info('---------------------------------\n');
 
-// Do not publish package if commit message contains [nopublish]
-if (message.toLowerCase().includes(wildcardNoPublish)) {
-  console.info(`[NPM-PUBLISH] Exit: ${wildcardNoPublish} present`);
-  process.exit(0);
-}
-
-// Set git credentials
+// 3. Set up GIT
 console.info('[NPM-PUBLISH] Config GIT');
-try {
-  execSync('command -v git');
-} catch (e) {
-  console.info('[NPM-PUBLISH] GIT not present, installing');
-  execSync('apt install git');
-}
-if (gitEmail) {
-  execSync(`git config --global user.email "${gitEmail}"`);
-}
-if (gitName) {
-  execSync(`git config --global user.name "${gitName}"`);
-}
-execSync('git fetch');
-execSync(`git checkout ${curatedBranch}`);
-execSync('git reset --hard');
+setupGit(curatedBranch, gitEmail, gitName);
 
-// Set type of version increment
-let version = 'patch';
-if (message.toLowerCase().includes(wildcardMinor)) {
-  version = 'minor';
-} else if (message.toLowerCase().includes(wildcardMajor)) {
-  version = 'major';
-}
-if (buildBeta) {
-  version = betaVersion;
-}
-
+// 4. Create and publish new version
+console.info('[NPM-PUBLISH] Creating new version');
 try {
-  console.info(`[NPM-PUBLISH] Creating new version with param: [${version}]`);
-  execSync('npm config set unsafe-perm true');
-  execSync(`npm --no-git-tag-version version ${version}`);
-  execSync('npm config set unsafe-perm false');
-  console.info(`[NPM-PUBLISH] Publish dependency ${buildBeta ? 'with --tag beta' : ''}`);
-  execSync(`npm publish${buildBeta ? ' --tag beta' : ''}${registry ? ` --registry=${registry}` : ''}`);
+  createNewVersion(newVersion, buildBeta, registry);
 } catch (e) {
   console.info('[NPM-PUBLISH] Problem publishing dependency');
   console.info(e);
   process.exit(1);
 }
 
+// 5. Push changes to Git repository
 if (!buildBeta) {
-  const { version, name } = readPackageUpSync().packageJson;
-  console.info(`[NPM-PUBLISH] Create git tag: ${name}/${version}`);
-  const message = commitMessage.replace("%v", version).replace("%p", name)
-  const gitTag = tagName.replace("%v", version).replace("%p", name);
-  execSync("git add .");
-  execSync(`git commit -m "${message}"`);
-  execSync(`git tag "${gitTag}"`);
-  console.info(`[NPM-PUBLISH] Push changes to ${curatedBranch}`);
-  execSync(`git push --tags --set-upstream origin ${curatedBranch}`);
+  console.info(`[NPM-PUBLISH] Pushing tag & commit to repository`);
+  pushToGitRepo(curatedBranch, parentPackage, commitMessage, tagName);
 }
