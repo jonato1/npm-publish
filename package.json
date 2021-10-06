@@ -1,13 +1,15 @@
 {
   "name": "@getyourguide/npm-publish",
-  "version": "1.0.15",
+  "version": "2.0.0-beta3",
   "description": "Module to publish npm modules",
-  "main": "npm-publish.js",
+  "exports": "./npm-publish.js",
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "https://github.com/getyourguide/npm-publish.git"
   },
   "scripts": {
+    "npm-publish": "node ./npm-publish.js",
     "test": "jest"
   },
   "bin": {
@@ -29,11 +31,11 @@
   "author": "Facundo Allemand <facundo.allemand@getyourguide.com>",
   "homepage": "https://github.com/getyourguide/npm-publish",
   "dependencies": {
-    "parent-module": "^2.0.0",
-    "read-pkg-up": "^7.0.1",
-    "yargs": "^17.1.1"
+    "parent-module": "^3.0.0",
+    "read-pkg-up": "^8.0.0",
+    "yargs": "^17.2.1"
   },
   "devDependencies": {
-    "jest": "^27.2.0"
+    "jest": "^27.2.4"
   }
 }

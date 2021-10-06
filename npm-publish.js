@@ -1,14 +1,20 @@
 #!/usr/bin/env node
-const { execSync } = require('child_process');
-const yargs = require('yargs');
-const paramsJson = require('./params.json');
-const readPkgUp = require('read-pkg-up');
+import fs from "fs";
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { execSync } from 'child_process';
+import yargs from 'yargs';
+import { hideBin } from 'yargs/helpers';
+import { readPackageUpSync } from 'read-pkg-up';
 
 /**
  * Publish package
  * This module handles the publishing of the new version of the library.
  */
-const params = yargs
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const paramsJson = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./params.json")));
+const argv = yargs(hideBin(process.argv));
+const params = argv
 .scriptName("npm-publish")
 .pkgConf('npm-publish')
 .usage('$0 -b branch -m message')
@@ -39,7 +45,7 @@ const message = fullMessage.split(/\\n|\n/)[0]; // Get just the first line of th
 // This exists since GITHUB_REF provided by GitHub Actions, unlike
 // DRONE_BRANCH, CIRCLE_BRANCH, etc contains the `refs/heads/` prefix
 const curatedBranch = branch.replace('refs/heads/', '');
-const parentPackage = readPkgUp.sync().packageJson;
+const parentPackage = readPackageUpSync().packageJson;
 const buildBeta = message.toLowerCase().includes(wildcardBeta);
 const betaVersion = `${parentPackage.version}-beta.${(Math.random() * 100).toFixed(0)}`;
 
@@ -116,7 +122,7 @@ try {
 }
 
 if (!buildBeta) {
-  const { version, name } = readPkgUp.sync().packageJson;
+  const { version, name } = readPackageUpSync().packageJson;
   console.info(`[NPM-PUBLISH] Create git tag: ${name}/${version}`);
   const message = commitMessage.replace("%v", version).replace("%p", name)
   const gitTag = tagName.replace("%v", version).replace("%p", name);
