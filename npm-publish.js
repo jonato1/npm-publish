@@ -55,7 +55,7 @@ console.info('---------------------------------\n');
 
 // 3. Set up GIT
 console.info('[NPM-PUBLISH] Reset changes & config git');
-// setupGit(branch, gitEmail, gitName);
+setupGit(branch, gitEmail, gitName);
 
 // 4. Create and publish new version
 console.info('[NPM-PUBLISH] Creating new version');
