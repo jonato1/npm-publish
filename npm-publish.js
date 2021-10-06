@@ -46,7 +46,7 @@ if (!shouldBuildVersion(publishBranches, branch, message, wildcardNoPublish, bui
 }
 
 // 2. Define new version
-const newVersion = getNewVersion(parentPackage.version, wildcardMinor, wildcardMajor, buildBeta);
+const newVersion = getNewVersion(parentPackage.version, message, wildcardMinor, wildcardMajor, buildBeta);
 console.info('-----------  VERSION  ------------');
 console.info(`Creating version: ${newVersion}`);
 console.info('Install it by running:');

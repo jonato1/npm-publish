@@ -31,7 +31,7 @@ export const shouldBuildVersion = (publishBranches, branch, message, wildcardNoP
   return (isPublishBranch || buildBeta) && !isNoPublishPresent;
 }
 
-export const getNewVersion = (actualVersion, wildcardMinor, wildcardMajor, buildBeta) => {
+export const getNewVersion = (actualVersion, message, wildcardMinor, wildcardMajor, buildBeta) => {
   if (buildBeta) {
     const betaVersion = `${actualVersion}-beta.${(Math.random() * 100).toFixed(0)}`;
     return betaVersion;
