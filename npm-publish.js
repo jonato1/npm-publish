@@ -31,7 +31,8 @@ const {
   gitEmail,
   gitName,
   commitMessage,
-  tagName
+  tagName,
+  registry,
 } = params.argv;
 
 const message = fullMessage.split(/\\n|\n/)[0]; // Get just the first line of the message
@@ -105,7 +106,7 @@ try {
   execSync(`npm --no-git-tag-version version ${version}`);
   execSync('npm config set unsafe-perm false');
   console.info(`[NPM-PUBLISH] Publish dependency ${buildBeta ? 'with --tag beta' : ''}`);
-  execSync(`npm publish${buildBeta ? ' --tag beta' : ''}`);
+  execSync(`npm publish${buildBeta ? ' --tag beta' : ''}${registry ? ` --registry=${registry}` : ''}`);
 } catch (e) {
   console.info('[NPM-PUBLISH] Problem publishing dependency');
   console.info(e);

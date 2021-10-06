@@ -30,6 +30,10 @@
     "describe": "wildcard to identify a commit to skip publish",
     "default": "[nopublish]"
   },
+  "registry": {
+    "describe": "npm registry to force the publish. npm publish --registry=VALUE",
+    "default": ""
+  },
   "git-email": {
     "describe": "git email to create the commit"
   },
