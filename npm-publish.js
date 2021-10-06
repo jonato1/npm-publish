@@ -48,7 +48,7 @@ if (!shouldBuildVersion(publishBranches, branch, message, wildcardNoPublish, bui
 // 2. Define new version
 const newVersion = getNewVersion(parentPackage.version, wildcardMinor, wildcardMajor, buildBeta);
 console.info('-----------  VERSION  ------------');
-console.info(`Creating beta version: ${newVersion}`);
+console.info(`Creating version: ${newVersion}`);
 console.info('Install it by running:');
 console.info(`npm i --save ${parentPackage.name}@${newVersion}`);
 console.info('---------------------------------\n');
