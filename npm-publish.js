@@ -47,11 +47,13 @@ if (!shouldBuildVersion(publishBranches, branch, message, wildcardNoPublish, bui
 
 // 2. Define new version
 const newVersion = getNewVersion(parentPackage.version, message, wildcardMinor, wildcardMajor, buildBeta);
-console.info('-----------  VERSION  ------------');
-console.info(`Creating version: ${newVersion}`);
-console.info('Install it by running:');
-console.info(`npm i --save ${parentPackage.name}@${newVersion}`);
-console.info('---------------------------------\n');
+if (buildBeta) {
+  console.info('-----------  BETA VERSION  ------------');
+  console.info(`Creating version: ${newVersion}`);
+  console.info('Install it by running:');
+  console.info(`npm i --save ${parentPackage.name}@${newVersion}`);
+  console.info('---------------------------------------\n');
+}
 
 // 3. Set up GIT
 console.info('[NPM-PUBLISH] Reset changes & config git');
