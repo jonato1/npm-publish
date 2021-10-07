@@ -11,6 +11,7 @@ export const getParams = () => {
   const argv = yargs(hideBin(process.argv));
   const params = argv
   .scriptName("npm-publish")
+  .config()
   .pkgConf('npm-publish')
   .usage('$0 -b branch -m message')
   .help();
