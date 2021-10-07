@@ -41,7 +41,7 @@ export const getNewVersion = (actualVersion, message, wildcardMinor, wildcardMaj
     return "minor";
   }
   if (message.toLowerCase().includes(wildcardMajor)) {
-    version = "major";
+    return "major";
   }
   return "patch";
 }
