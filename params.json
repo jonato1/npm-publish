@@ -9,6 +9,13 @@
     "describe": "commit message",
     "demandOption": true
   },
+  "mode": {
+    "default": "create-and-publish",
+    "type": "string",
+    "describe": "Specify if you want just to create the version, only publish a previous version, or both",
+    "choices": ["create-and-publish", "create-version", "publish"],
+    "demandOption": true
+  },
   "publish-branches": {
     "describe": "branches in which it should publish",
     "default": "master",
