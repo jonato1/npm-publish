@@ -81,3 +81,16 @@ You can also specify the params in your `package.json`. Add a section `npm-publi
   }
 }
 ```
+
+### Add config in an external file
+Create a file called `.npm-publish` and it will automatically read by the library
+```json
+{
+  "publishBranches": ["master", "develop"],
+  "wildcardMinor": "[custom-minor]",
+  "wildcardMajor": "[custom-major]",
+  "gitEmail": "it@mycompany.com",
+  "gitName": "IT - MyCompany",
+  "...": "..."
+}
+```

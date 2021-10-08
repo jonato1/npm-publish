@@ -31,6 +31,7 @@
   "author": "Facundo Allemand <facundo.allemand@getyourguide.com>",
   "homepage": "https://github.com/getyourguide/npm-publish",
   "dependencies": {
+    "find-up": "^6.2.0",
     "parent-module": "^3.0.0",
     "read-pkg-up": "^8.0.0",
     "yargs": "^17.2.1"

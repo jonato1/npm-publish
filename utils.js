@@ -4,14 +4,17 @@ import yargs from 'yargs';
 import { execSync } from 'child_process';
 import { fileURLToPath } from 'url';
 import { hideBin } from 'yargs/helpers';
+import findUp from 'find-up';
 
 export const getParams = () => {
   const __dirname = path.dirname(fileURLToPath(import.meta.url));
   const paramsJson = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./params.json")));
+  const configPath = findUp.sync(['.npm-publish', '.npm-publish.json']);
+  const config = configPath ? JSON.parse(fs.readFileSync(configPath)) : {};
   const argv = yargs(hideBin(process.argv));
   const params = argv
   .scriptName("npm-publish")
-  .config()
+  .config(config)
   .pkgConf('npm-publish')
   .usage('$0 -b branch -m message')
   .help();
