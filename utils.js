@@ -6,6 +6,10 @@ import { fileURLToPath } from 'url';
 import { hideBin } from 'yargs/helpers';
 import { findUpSync } from 'find-up';
 
+/**
+ * Get's all the parameters based on the config or arguments passed.
+ * @returns {object} object with all parameters
+ */
 export const getParams = () => {
   const __dirname = path.dirname(fileURLToPath(import.meta.url));
   const paramsJson = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./params.json")));
@@ -29,13 +33,22 @@ export const getParams = () => {
   return params.argv;
 }
 
+/**
+ * Determines if we should create a new version or not, based on the message,
+ * branch and the rest of the parameters
+ * @returns {boolean} true|false
+ */
 export const shouldBuildVersion = (publishBranches, branch, message, wildcardNoPublish, buildBeta) => {
   const isPublishBranch = publishBranches.includes(branch);
   const isNoPublishPresent = message.toLowerCase().includes(wildcardNoPublish);
   return (isPublishBranch || buildBeta) && !isNoPublishPresent;
 }
 
-export const getNewVersion = (actualVersion, message, wildcardMinor, wildcardMajor, buildBeta) => {
+/**
+ * Get the new version increment based on the commit message and the params
+ * @returns patch | minor | major | 1.0.0-beta.xxx
+ */
+export const getVersionIncrement = (actualVersion, message, wildcardMinor, wildcardMajor, buildBeta) => {
   if (buildBeta) {
     const betaVersion = `${actualVersion}-beta.${(Math.random() * 100).toFixed(0)}`;
     return betaVersion;
@@ -49,36 +62,46 @@ export const getNewVersion = (actualVersion, message, wildcardMinor, wildcardMaj
   return "patch";
 }
 
-export const createNewVersion = (version, buildBeta, registry) => {
+/**
+ * Creates the new desired version updating the package.json and returns the new number
+ * @param {string} version patch | minor | major | specific number (ex. 1.0.5)
+ * @returns the new version number
+ */
+export const createNewVersion = (version) => {
   execSync('npm config set unsafe-perm true');
-  execSync(`npm --no-git-tag-version version ${version}`);
+  const newVersion = execSync(`npm --no-git-tag-version version ${version}`).toString();
   execSync('npm config set unsafe-perm false');
+  return newVersion.trim().replace("v", "");
+}
+
+/**
+ * Publish the new version to the 
+ * @param {string} version patch | minor | major | specific number (ex. 1.0.5)
+ * @returns the new version number
+ */
+export const publishNewVersion = (buildBeta, registry) => {
   execSync(`npm publish${buildBeta ? ' --tag beta' : ''}${registry ? ` --registry=${registry}` : ''}`);
 }
 
-export const pushToGitRepo = (branch, parentPackage, commitMessage, tagName) => {
+export const pushToGitRepo = (branch, parentPackage, commitMessage, tagName, gitEmail, gitName) => {
   const message = commitMessage.replace("%v", parentPackage.version).replace("%p", parentPackage.name)
   execSync("git add .");
-  execSync(`git commit -m "${message}"`);
+  execSync(`git commit -m "${message}" --author="${gitName} <${gitEmail}>"`);
   const gitTag = tagName.replace("%v", parentPackage.version).replace("%p", parentPackage.name);
   execSync(`git tag "${gitTag}"`);
-  execSync(`git push --tags --set-upstream origin ${branch}`);
+  // execSync(`git push --tags --set-upstream origin ${branch}`);
 }
 
-export const setupGit = (branch, gitEmail, gitName) => {
+export const installGit = () => {
   try {
     execSync('command -v git');
   } catch (e) {
     console.info('[NPM-PUBLISH] GIT not present, installing');
     execSync('apt install git');
   }
-  if (gitEmail) {
-    execSync(`git config --global user.email "${gitEmail}"`);
-  }
-  if (gitName) {
-    execSync(`git config --global user.name "${gitName}"`);
-  }
-  execSync('git fetch');
-  execSync(`git checkout ${branch}`);
-  execSync('git reset --hard');
+}
+
+export const cleanChanges = () => {
+  installGit();
+  execSync(`git checkout .`);
 }
