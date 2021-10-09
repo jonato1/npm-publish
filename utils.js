@@ -113,5 +113,5 @@ export const installGit = () => {
  */
 export const cleanChanges = () => {
   installGit();
-  execSync(`git restore .`);
+  execSync(`git checkout . &>/dev/null`);
 }
