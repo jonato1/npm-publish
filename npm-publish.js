@@ -63,7 +63,7 @@ if (mode === "create-version" || mode === "create-and-publish") {
 if (mode === "publish" || mode === "create-and-publish") {
   // 3a. Publish new version
   try {
-    console.info('[NPM-PUBLISH] Creating new version');
+    console.info('[NPM-PUBLISH] Publishing new version');
     publishNewVersion(buildBeta, registry);
   } catch (e) {
     console.info('[NPM-PUBLISH] Problem publishing dependency');

@@ -34,13 +34,13 @@ npm install --save-dev @getyourguide/npm-publish
 publish-package:
   image: node:12-buster
   commands:
-    - npm run npm-publish -- -b ${DRONE_BRANCH} -m "$${DRONE_COMMIT_MESSAGE}"
+    - npm run npm-publish -- --branch ${DRONE_BRANCH} --message "$${DRONE_COMMIT_MESSAGE}"
 ```
 
 **Github Actions**  
 ```yml
 - name: Publish library
-  run: npm run npm-publish -- -b "${{ github.ref }}" -m "${{ github.event.head_commit.message }}"
+  run: npm run npm-publish -- --branch "${{ github.ref }}" --message "${{ github.event.head_commit.message }}"
 ```
 [workflow.yml full example](./docs/github-workflow-example.yml)  
 
@@ -67,8 +67,17 @@ Options:
                                        [default: "v%v"]
 ```
 
-### Add config in package.json
-You can also specify the params in your `package.json`. Add a section `npm-publish`
+### Configuration
+There are 3 ways of specifing the configuration
+
+#### 1. Passing directly params
+```sh
+npm-publish --branch test --message test --registry "test.com"
+```
+
+#### 2. Add config in package.json
+You can also specify the params in your `package.json`. Add a section `npm-publish`.  
+Params should be specified in camelCase.
 ```json
 {
   "npm-publish": {
@@ -82,8 +91,8 @@ You can also specify the params in your `package.json`. Add a section `npm-publi
 }
 ```
 
-### Add config in an external file
-Create a file called `.npm-publish` and it will automatically read by the library
+#### 3. Add config in an external file
+Create a file called `.npm-publish` and it will automatically be read by the library
 ```json
 {
   "publishBranches": ["master", "develop"],
@@ -93,4 +102,40 @@ Create a file called `.npm-publish` and it will automatically read by the librar
   "gitName": "IT - MyCompany",
   "...": "..."
 }
+```
+
+### Using the mode option
+By default, the library will create a new version and publish it right away.  
+There could be cases where you need only one of these actions or where you need to execute something between the version generation and the publish of the library.
+
+#### using --mode create-version
+This mode will just detect (based on the message and the params) what's the next version to generate,  
+and it will update the package.json with the new version.  
+Notice that it won't publish the library
+```
+npm-publish --mode create-version --branch test --message test
+```
+
+#### using --mode publish
+This mode will just publish a previous generated version.  
+Notice that you'll need to create the version previously.  
+```
+npm version patch
+npm-publish --mode publish --branch test --message test
+```
+
+#### Running command between version generation and publish
+```yml
+create-version:
+  image: node:12-buster
+  commands:
+    - npm run npm-publish -- --mode create-version --branch ${DRONE_BRANCH} --message "$${DRONE_COMMIT_MESSAGE}"
+custom-command:
+  image: node:12-buster
+  commands:
+    - Run a command with the updated package.json version number
+publish-version:
+  image: node:12-buster
+  commands:
+    - npm run npm-publish -- --mode publish --branch ${DRONE_BRANCH} --message "$${DRONE_COMMIT_MESSAGE}"
 ```
