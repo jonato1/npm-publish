@@ -73,7 +73,7 @@ if (mode === "publish" || mode === "create-and-publish") {
 
   // 3b. Push changes to Git repository
   if (!buildBeta) {
-    console.info(`[NPM-PUBLISH] Pushing tag & commit to repository`);
+    console.info(`\n[NPM-PUBLISH] Pushing tag & commit to repository`);
     const updatedParentPackage = readPackageUpSync().packageJson;
     pushToGitRepo(branch, updatedParentPackage, commitMessage, tagName, gitEmail, gitName);
   }
