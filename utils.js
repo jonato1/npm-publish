@@ -5,6 +5,7 @@ import { execSync } from 'child_process';
 import { fileURLToPath } from 'url';
 import { hideBin } from 'yargs/helpers';
 import { findUpSync } from 'find-up';
+import { readPackageUpSync } from 'read-pkg-up';
 
 /**
  * Get's all the parameters based on the config or arguments passed.
@@ -69,9 +70,10 @@ export const getVersionIncrement = (actualVersion, message, wildcardMinor, wildc
  */
 export const createNewVersion = (version) => {
   execSync('npm config set unsafe-perm true');
-  const newVersion = execSync(`npm --no-git-tag-version version ${version}`).toString();
+  execSync(`npm --no-git-tag-version version ${version}`);
   execSync('npm config set unsafe-perm false');
-  return newVersion.trim().replace("v", "");
+  const updatedPackage = readPackageUpSync().packageJson;
+  return updatedPackage.version;
 }
 
 /**
