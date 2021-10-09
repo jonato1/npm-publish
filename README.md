@@ -117,8 +117,8 @@ npm-publish --mode create-version --branch test --message test
 ```
 
 #### using --mode publish
-This mode will just publish a previous generated version.  
-Notice that you'll need to create the version previously.  
+This mode will publish a previous generated version, create the tag for the new version and push a commit to your github repo.  
+Notice that you'll need to update the package version previously.  
 ```
 npm version patch
 npm-publish --mode publish --branch test --message test
