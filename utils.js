@@ -91,8 +91,9 @@ export const publishNewVersion = (buildBeta, registry) => {
 export const pushToGitRepo = (branch, parentPackage, commitMessage, tagName, gitEmail, gitName) => {
   const message = commitMessage.replace("%v", parentPackage.version).replace("%p", parentPackage.name)
   execSync("git add .");
-  const author = gitEmail && gitName ? ` --author="${gitName} <${gitEmail}>"` : "";
-  execSync(`git commit -m "${message}"${author}`);
+  let author = gitName ? `-c "user.name=${gitName}"` : "";
+  author = gitEmail ? `${author} -c "user.email=${gitEmail}"` : "";
+  execSync(`git commit ${author} -m "${message}"`);
   const gitTag = tagName.replace("%v", parentPackage.version).replace("%p", parentPackage.name);
   execSync(`git tag "${gitTag}"`);
   execSync(`git push --tags --set-upstream origin ${branch}`);
