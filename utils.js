@@ -93,7 +93,7 @@ export const pushToGitRepo = (branch, parentPackage, commitMessage, tagName, git
   execSync("git add .");
   let author = gitName ? `-c "user.name=${gitName}"` : "";
   author = gitEmail ? `${author} -c "user.email=${gitEmail}"` : "";
-  execSync(`git commit ${author} -m "${message}"`);
+  execSync(`git ${author} commit -m "${message}"`);
   const gitTag = tagName.replace("%v", parentPackage.version).replace("%p", parentPackage.name);
   execSync(`git tag "${gitTag}"`);
   execSync(`git push --tags --set-upstream origin ${branch}`);
