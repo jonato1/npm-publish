@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { readPackageUpSync } from 'read-pkg-up';
-import { getParams, shouldBuildVersion, getVersionIncrement, getBetaVersion, createNewVersion, publishNewVersion, pushToGitRepo, cleanChanges } from "./utils.js";
+import { params, shouldPublish, increment, betaVersion, create, publish, push, clean } from "./utils.js";
 
 /**
  * Publish package
@@ -20,7 +20,7 @@ const {
   commitMessage,
   tagName,
   registry,
-} = getParams();
+} = params();
 
 const message = fullMessage.split(/\\n|\n/)[0]; // Get just the first line of the message
 const parentPackage = readPackageUpSync().packageJson;
@@ -42,19 +42,19 @@ console.info(`WILDCARD_NO_PUBLISH: "${wildcardNoPublish}"`);
 console.info(`PUBLISH BRANCHES: ${publishBranches}\n`);
 
 // 1. Check if we should create the new version
-if (!shouldBuildVersion(publishBranches, branch, message, wildcardNoPublish, buildBeta)) {
-  console.info('[NPM-PUBLISH] Exit: No need to build the version');
+if (!shouldPublish(publishBranches, branch, message, wildcardNoPublish, buildBeta)) {
+  console.info('[NPM-PUBLISH] Exit: No need to publish the version');
   process.exit(0);
 }
 
 // 2. Create new version
 if (mode === "create-version" || mode === "create-and-publish") {
-  cleanChanges(); // We need a clean tree to be able to generate the version
-  const newIncrement = getVersionIncrement(message, wildcardMinor, wildcardMajor);
-  let newVersion = createNewVersion(newIncrement);
+  clean(); // We need a clean tree to be able to generate the version
+  const newIncrement = increment(message, wildcardMinor, wildcardMajor);
+  let newVersion = create(newIncrement);
   if (buildBeta) {
-    const betaVersion = getBetaVersion(newVersion);
-    newVersion = createNewVersion(betaVersion);
+    const beta = betaVersion(newVersion);
+    newVersion = create(beta);
   }
   console.info('----------------  VERSION  ----------------');
   console.info(`Version created: ${newVersion.trim()}`);
@@ -68,7 +68,7 @@ if (mode === "publish" || mode === "create-and-publish") {
   // 3a. Publish new version
   try {
     console.info('[NPM-PUBLISH] Publishing new version');
-    publishNewVersion(buildBeta, registry);
+    publish(buildBeta, registry);
   } catch (e) {
     console.info('[NPM-PUBLISH] Problem publishing dependency');
     console.info(e);
@@ -79,6 +79,6 @@ if (mode === "publish" || mode === "create-and-publish") {
   if (!buildBeta) {
     console.info(`\n[NPM-PUBLISH] Pushing tag & commit to repository`);
     const updatedParentPackage = readPackageUpSync().packageJson;
-    pushToGitRepo(branch, updatedParentPackage, commitMessage, tagName, gitEmail, gitName);
+    push(branch, updatedParentPackage, commitMessage, tagName, gitEmail, gitName);
   }
 }

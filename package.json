@@ -9,7 +9,8 @@
     "url": "https://github.com/getyourguide/npm-publish.git"
   },
   "scripts": {
-    "npm-publish": "node ./npm-publish.js --branch master --message patch-version",
+    "publish": "node ./npm-publish.js --branch master --message 'publish dependency'",
+    "publish:beta": "node ./npm-publish.js --mode create-version --branch test --message '[beta] build beta'",
     "test": "jest"
   },
   "bin": {

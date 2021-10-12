@@ -11,7 +11,7 @@ import { readPackageUpSync } from 'read-pkg-up';
  * Get's all the parameters based on the config or arguments passed.
  * @returns {object} object with all parameters
  */
-export const getParams = () => {
+export const params = () => {
   const __dirname = path.dirname(fileURLToPath(import.meta.url));
   const paramsJson = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./params.json")));
   const configPath = findUpSync(['.npm-publish', '.npm-publish.json']);
@@ -39,7 +39,7 @@ export const getParams = () => {
  * branch and the rest of the parameters
  * @returns {boolean} true|false
  */
-export const shouldBuildVersion = (publishBranches, branch, message, wildcardNoPublish, buildBeta) => {
+export const shouldPublish = (publishBranches, branch, message, wildcardNoPublish, buildBeta) => {
   const isPublishBranch = publishBranches.includes(branch);
   const isNoPublishPresent = message.toLowerCase().includes(wildcardNoPublish);
   return (isPublishBranch || buildBeta) && !isNoPublishPresent;
@@ -49,7 +49,7 @@ export const shouldBuildVersion = (publishBranches, branch, message, wildcardNoP
  * Get the new version increment based on the commit message and the params
  * @returns patch | minor | major
  */
-export const getVersionIncrement = (message, wildcardMinor, wildcardMajor, buildBeta) => {
+export const increment = (message, wildcardMinor, wildcardMajor, buildBeta) => {
   if (message.toLowerCase().includes(wildcardMinor)) {
     return "minor";
   }
@@ -63,7 +63,7 @@ export const getVersionIncrement = (message, wildcardMinor, wildcardMajor, build
  * Generates a random version for the beta
  * @returns 1.0.0-betaXX
  */
- export const getBetaVersion = (actualVersion) => {
+ export const betaVersion = (actualVersion) => {
   const betaVersion = `${actualVersion}-beta.${(Math.random() * 100).toFixed(0)}`;
   return betaVersion;
  }
@@ -73,7 +73,7 @@ export const getVersionIncrement = (message, wildcardMinor, wildcardMajor, build
  * @param {string} version patch | minor | major | specific number (ex. 1.0.5)
  * @returns the new version number
  */
-export const createNewVersion = (version) => {
+export const create = (version) => {
   execSync('npm config set unsafe-perm true');
   execSync(`npm --no-git-tag-version version ${version}`);
   execSync('npm config set unsafe-perm false');
@@ -86,14 +86,14 @@ export const createNewVersion = (version) => {
  * @param {string} version patch | minor | major | specific number (ex. 1.0.5)
  * @returns the new version number
  */
-export const publishNewVersion = (buildBeta, registry) => {
+export const publish = (buildBeta, registry) => {
   execSync(`npm publish${buildBeta ? ' --tag beta' : ''}${registry ? ` --registry=${registry}` : ''}`);
 }
 
 /**
  * Creates a new commit and a tag and pushes to the git repository
  */
-export const pushToGitRepo = (branch, parentPackage, commitMessage, tagName, gitEmail, gitName) => {
+export const push = (branch, parentPackage, commitMessage, tagName, gitEmail, gitName) => {
   const message = commitMessage.replace("%v", parentPackage.version).replace("%p", parentPackage.name)
   execSync("git add .");
   let author = gitName ? `-c "user.name=${gitName}"` : "";
@@ -119,7 +119,7 @@ export const installGit = () => {
 /**
  * Clean untracked changes. i.e. package-lock.json generated after npm i
  */
-export const cleanChanges = () => {
+export const clean = () => {
   installGit();
   execSync(`git checkout . &>/dev/null`);
 }
