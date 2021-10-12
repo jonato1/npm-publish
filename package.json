@@ -9,7 +9,7 @@
     "url": "https://github.com/getyourguide/npm-publish.git"
   },
   "scripts": {
-    "npm-publish": "node ./npm-publish.js",
+    "npm-publish": "node ./npm-publish.js --branch master --message patch-version",
     "test": "jest"
   },
   "bin": {

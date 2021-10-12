@@ -68,7 +68,7 @@ Options:
 ```
 
 ### Configuration
-There are 3 ways of specifing the configuration
+There are 3 ways of specifing the configuration.  
 
 #### 1. Passing directly params
 ```sh
@@ -102,6 +102,32 @@ Create a file called `.npm-publish` and it will automatically be read by the lib
   "gitName": "IT - MyCompany",
   "...": "..."
 }
+```
+
+#### Combining different config methods
+You can combine the above methods according to your needs.  
+They are listed in order of priority, so if you define the same parameter in the 3 places, first it will try to get it from the command line, if it doesn't exists then from the `package.json` section, and if it's also not there, it will try to get it from the `.npm-publish` file.
+
+Suppose the existing configuration: 
+```js
+npm publish --branch cmd-branch
+
+// package.json
+{
+  "npm-publish": {
+    "branch": "pkg-branch",
+    "registry": "pkg-registry",
+  },
+}
+
+// .npm-publish
+{
+  "branch": "file-branch",
+  "registry": "file-registry",
+  "gitName": "file-git-name",
+}
+
+// Result: branch:cmd-branch registry:pkg-registry git-name:file-git-name
 ```
 
 ### Using the mode option
