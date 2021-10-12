@@ -47,13 +47,9 @@ export const shouldBuildVersion = (publishBranches, branch, message, wildcardNoP
 
 /**
  * Get the new version increment based on the commit message and the params
- * @returns patch | minor | major | 1.0.0-beta.xxx
+ * @returns patch | minor | major
  */
-export const getVersionIncrement = (actualVersion, message, wildcardMinor, wildcardMajor, buildBeta) => {
-  if (buildBeta) {
-    const betaVersion = `${actualVersion}-beta.${(Math.random() * 100).toFixed(0)}`;
-    return betaVersion;
-  }
+export const getVersionIncrement = (message, wildcardMinor, wildcardMajor, buildBeta) => {
   if (message.toLowerCase().includes(wildcardMinor)) {
     return "minor";
   }
@@ -62,6 +58,15 @@ export const getVersionIncrement = (actualVersion, message, wildcardMinor, wildc
   }
   return "patch";
 }
+
+/**
+ * Generates a random version for the beta
+ * @returns 1.0.0-betaXX
+ */
+ export const getBetaVersion = (actualVersion) => {
+  const betaVersion = `${actualVersion}-beta.${(Math.random() * 100).toFixed(0)}`;
+  return betaVersion;
+ }
 
 /**
  * Creates the new desired version updating the package.json and returns the new number

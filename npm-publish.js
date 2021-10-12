@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { readPackageUpSync } from 'read-pkg-up';
-import { getParams, shouldBuildVersion, getVersionIncrement, createNewVersion, publishNewVersion, pushToGitRepo, cleanChanges } from "./utils.js";
+import { getParams, shouldBuildVersion, getVersionIncrement, getBetaVersion, createNewVersion, publishNewVersion, pushToGitRepo, cleanChanges } from "./utils.js";
 
 /**
  * Publish package
@@ -49,9 +49,13 @@ if (!shouldBuildVersion(publishBranches, branch, message, wildcardNoPublish, bui
 
 // 2. Create new version
 if (mode === "create-version" || mode === "create-and-publish") {
-  const newIncrement = getVersionIncrement(parentPackage.version, message, wildcardMinor, wildcardMajor, buildBeta);
   cleanChanges(); // We need a clean tree to be able to generate the version
-  const newVersion = createNewVersion(newIncrement);
+  const newIncrement = getVersionIncrement(message, wildcardMinor, wildcardMajor);
+  let newVersion = createNewVersion(newIncrement);
+  if (buildBeta) {
+    const betaVersion = getBetaVersion(newVersion);
+    newVersion = createNewVersion(betaVersion);
+  }
   console.info('----------------  VERSION  ----------------');
   console.info(`Version created: ${newVersion.trim()}`);
   console.info('Install it once published by running:');
