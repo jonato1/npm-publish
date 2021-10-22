@@ -49,7 +49,7 @@ if (!shouldPublish(publishBranches, branch, message, wildcardNoPublish, buildBet
 
 // 2. Create new version
 if (mode === "create-version" || mode === "create-and-publish") {
-  clean(); // We need a clean tree to be able to generate the version
+  clean(branch); // We need a clean tree to be able to generate the version
   const newIncrement = increment(message, wildcardMinor, wildcardMajor);
   let newVersion = create(newIncrement);
   if (buildBeta) {

@@ -119,7 +119,7 @@ export const installGit = () => {
 /**
  * Clean untracked changes. i.e. package-lock.json generated after npm i
  */
-export const clean = () => {
+export const clean = (branch) => {
   installGit();
-  execSync(`git checkout . &>/dev/null`);
+  execSync(`git checkout ${branch} &>/dev/null`);
 }
