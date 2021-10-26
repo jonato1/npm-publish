@@ -102,7 +102,15 @@ export const push = (branch, parentPackage, commitMessage, tagName, gitEmail, gi
   execSync(`git ${author} commit -m "${message}"`);
   const gitTag = tagName.replace("%v", parentPackage.version).replace("%p", parentPackage.name);
   execSync(`git tag "${gitTag}"`);
-  execSync(`git push --tags --set-upstream origin ${branch}`);
+  try {
+    execSync(`git push --tags --set-upstream origin ${branch}`);
+  } catch {
+    console.info('[NPM-PUBLISH] Pull and retry pushing to the repo');
+    // Sometimes the push of the commit fails because there was an update on the 
+    // main branch just before pushing. Pull and retry without pushing the tags again.
+    pull(branch);
+    execSync(`git push --set-upstream origin ${branch}`);
+  }
 }
 
 /**
