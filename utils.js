@@ -96,6 +96,7 @@ export const publish = (buildBeta, registry) => {
 export const push = (branch, parentPackage, commitMessage, tagName, gitEmail, gitName) => {
   const message = commitMessage.replace("%v", parentPackage.version).replace("%p", parentPackage.name)
   execSync("git add .");
+  pull(); // pull latest changes to be able to push
   let author = gitName ? `-c "user.name=${gitName}"` : "";
   author = gitEmail ? `${author} -c "user.email=${gitEmail}"` : "";
   execSync(`git ${author} commit -m "${message}"`);
@@ -122,4 +123,12 @@ export const installGit = () => {
 export const clean = (branch) => {
   installGit();
   execSync(`git checkout ${branch} &>/dev/null`);
+}
+
+/**
+ * Pull latest changes. This is needed in order to push to the repo
+ */
+export const pull = () => {
+  execSync("git fetch &>/dev/null");
+  execSync("git pull &>/dev/null");
 }
