@@ -1,6 +1,6 @@
 {
   "name": "@getyourguide/npm-publish",
-  "version": "2.0.24",
+  "version": "2.0.25",
   "description": "Module to publish npm modules",
   "exports": "./npm-publish.js",
   "type": "module",
@@ -10,7 +10,7 @@
   },
   "scripts": {
     "npm-publish": "node ./npm-publish.js --branch master --message 'publish dependency'",
-    "npm-publish:beta": "node ./npm-publish.js --branch test --message '[beta] build beta'",
+    "npm-publish:beta": "node ./npm-publish.js --branch master --message '[beta] build beta'",
     "test": "jest"
   },
   "bin": {
