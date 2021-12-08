@@ -1,6 +1,11 @@
 # GetYourGuide - npm publish
 > CLI tool to handle publishing modules, detecting the version increment from the commit message, generating the tags and pushing to github.
 
+### Deprecated
+This library has been moved to [ts-libs](https://github.com/getyourguide/ts-libs/tree/main/packages/npm-publish)
+
+----
+
 ### Features
 - Allow to define increment (patch, minor, major) based on commit message.
 - Allow to create beta versions based on the message.
